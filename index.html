@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Email List</title>
+</head>
+<body>
+
+    <h1>Emails Loaded from Google Sheet</h1>
+    <p>Loading emails...</p>
+    <ul id="email-list">
+        </ul>
+
+    <script>
+        // 🚨 IMPORTANT: Replace this with the actual URL you got after deploying your Apps Script Web App.
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyRS9KOpOKIMmZwtIJuKeE50tbv-L_3Gee_sSX3CKaNifUyxVplONLc0kHUiBGJf43R/exec';
+        
+        // Use 'let' or 'const' to declare the array variable inside the fetch block,
+        // or declare it globally and assign the value later.
+        let emailArray = []; // Declared but initialized as empty/null initially.
+
+        /**
+         * Fetches email data from the deployed Google Apps Script Web App.
+         */
+        function fetchEmails() {
+            fetch(WEB_APP_URL)
+                .then(response => {
+                    // Check if the response was successful (status 200)
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json(); // Parse the response body as JSON
+                })
+                .then(data => {
+                    // 1. Declare and populate the global variable
+                    emailArray = data; // 'data' is the array of emails returned by doGet()
+
+                    console.log("Emails loaded successfully:", emailArray);
+                    
+                    // 2. You can now call a function to use this data
+                    displayEmails(emailArray);
+                })
+                .catch(error => {
+                    console.error('Error fetching emails. Check URL and CORS settings:', error);
+                    document.querySelector('p').textContent = 'Error: Could not load emails. See console for details.';
+                });
+        }
+
+        /**
+         * Renders the email array in the HTML list.
+         * @param {string[]} emails - The array of emails.
+         */
+        function displayEmails(emails) {
+            const listElement = document.getElementById('email-list');
+            
+            // Clear the "Loading emails..." text
+            document.querySelector('p').remove(); 
+            
+            // Populate the list
+            emails.forEach(email => {
+                const listItem = document.createElement('li');
+                listItem.textContent = email;
+                listElement.appendChild(listItem);
+            });
+        }
+
+        // Start the process when the script loads
+        fetchEmails();
+
+    </script>
+</body>
+</html>

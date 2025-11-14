@@ -55,13 +55,19 @@
             
             // Clear the "Loading emails..." text
             document.querySelector('p').remove(); 
-            
+
+            const listItem = document.createElement('li');
             // Populate the list
             emails.forEach(email => {
-                const listItem = document.createElement('li');
+                
                 listItem.textContent = email;
                 listElement.appendChild(listItem);
             });
+
+            if (emails.includes('terenceftw@gmail.com')) {
+                listItem.textContent = 'Yes';
+                listElement.appendChild(listItem);
+            } 
         }
 
         // Start the process when the script loads
